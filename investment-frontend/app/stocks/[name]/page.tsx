@@ -6,8 +6,8 @@ import StockChart from "../../../components/StockChart";
 import PredictionBox from "../../../components/PredictionBox";
 
 export default function StockDetail() {
-  const params = useParams();
-  const stockName = params.name as string;
+  const params = useParams<{ name: string }>();
+  const stockName = params.name;
 
   const data = [
     { day: "Mon", price: 3000 },

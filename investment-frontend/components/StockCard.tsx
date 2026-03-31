@@ -12,7 +12,10 @@ export default function StockCard({ name, price }: Props) {
 
   return (
     <div
-      onClick={() => router.push(`/stocks/${name}`)}
+      onClick={() => {
+        console.log("Navigating to:", `/stocks/${name}`);
+        router.push(`/stocks/${name}`);
+      }}
       className="p-6 rounded-xl shadow-lg cursor-pointer transition-all duration-300 border border-gray-700 hover:border-green-500 hover:scale-105"
     >
       <h2 className="text-xl font-bold">{name}</h2>
