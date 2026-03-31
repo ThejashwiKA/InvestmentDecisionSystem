@@ -28,7 +28,7 @@ export default function StockDetail() {
 
       <div className="p-10">
         <h1 className="text-4xl font-bold mb-6">
-          {stockName} 📊
+          {stockName} 
         </h1>
 
         <div className="grid grid-cols-3 gap-6">
