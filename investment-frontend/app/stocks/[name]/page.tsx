@@ -1,48 +1,72 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import Navbar from "../../../components/Navbar";
-import StockChart from "../../../components/StockChart";
-import PredictionBox from "../../../components/PredictionBox";
+import { useEffect, useState } from "react";
+import { getStockData } from "@/services/stockService";
+import StockChart from "@/components/StockChart";
+import PredictionBox from "@/components/PredictionBox";
 
-export default function StockDetail() {
-  const params = useParams<{ name: string }>();
-  const stockName = params.name;
+type StockData = {
+  name: string;
+  price: number;
+  prediction: string;
+  confidence: number;
+  trend: number[];
+};
 
-  const data = [
-    { day: "Mon", price: 3000 },
-    { day: "Tue", price: 3200 },
-    { day: "Wed", price: 3400 },
-    { day: "Thu", price: 3300 },
-    { day: "Fri", price: 3500 },
-  ];
+export default function StockPage() {
+  const params = useParams();
 
-  const prediction = {
-    action: "BUY",
-    confidence: 78,
-  };
+  const name = Array.isArray(params.name)
+    ? params.name[0]
+    : params.name || "";
+
+  const [data, setData] = useState<StockData | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!name) return;
+
+    async function fetchData() {
+      try {
+        const result = await getStockData(name);
+        setData(result);
+      } catch (err) {
+        setError("Failed to load data");
+      }
+    }
+
+    fetchData();
+  }, [name]);
+
+  if (!data && !error) {
+    return <p className="p-4">Loading...</p>;
+  }
+
+  if (error) {
+    return <p className="p-4 text-red-500">{error}</p>;
+  }
 
   return (
-    <div className="bg-gray-950 min-h-screen text-white">
-      <Navbar />
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-2">{data?.name}</h1>
 
-      <div className="p-10">
-        <h1 className="text-4xl font-bold mb-6">
-          {stockName} 
-        </h1>
+      <p className="text-green-400 mb-6">₹ {data?.price}</p>
 
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2">
-            <StockChart title={`${stockName} Trend`} data={data} />
-          </div>
+      <div className="grid grid-cols-3 gap-6">
 
-          <div>
-            <PredictionBox
-              action={prediction.action}
-              confidence={prediction.confidence}
-            />
-          </div>
+        <div className="col-span-2 bg-black p-4 rounded">
+          <StockChart trend={data?.trend || []} />
         </div>
+
+
+        <div className="bg-black p-4 rounded">
+          <PredictionBox
+            prediction={data?.prediction || ""}
+            confidence={data?.confidence || 0}
+          />
+        </div>
+
       </div>
     </div>
   );

@@ -1,26 +1,18 @@
 type Props = {
-  action: string;
+  prediction: string;
   confidence: number;
 };
 
-export default function PredictionBox({ action, confidence }: Props) {
-  const getColor = () => {
-    if (action === "BUY") return "text-green-400";
-    if (action === "SELL") return "text-red-400";
-    return "text-yellow-400";
-  };
-
+export default function PredictionBox({ prediction, confidence }: Props) {
   return (
-    <div className="p-6 bg-black rounded-xl shadow-lg mt-6">
-      <h2 className="text-white text-lg mb-2">AI Prediction</h2>
+    <div className="text-white">
+      <h2 className="mb-2">AI Prediction</h2>
 
-      <p className={`text-2xl font-bold ${getColor()}`}>
-        {action}
+      <p className="text-green-400 text-xl font-bold">
+        {prediction}
       </p>
 
-      <p className="text-gray-400 mt-2">
-        Confidence: {confidence}%
-      </p>
+      <p>Confidence: {confidence}%</p>
     </div>
   );
 }
